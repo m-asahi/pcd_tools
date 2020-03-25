@@ -8,7 +8,14 @@ import matplotlib.pyplot as plt
 
 from optparse import OptionParser
 
-color_map = 'hsv'
+def color_map(n, map):
+	colmap = plt.get_cmap(map, n)
+	npcolmap = np.ndarray([n, 3])
+	for i in range(n):
+		npcolmap[i] = colmap(i)[0:3]
+	z = np.zeros(3).reshape(1,3)
+	npcolmap = np.insert(npcolmap, 0, z, axis=0)
+	return npcolmap
 
 parser = OptionParser("usage: %prog [options] npy_file\nConvert numpy XYZRGB format to PCD format.")
 parser.add_option('-o', '--output', help='output filename', metavar='FILE')
@@ -26,17 +33,7 @@ if outfile is None:
 	outfile = name + '.pcd'
 
 pts = np.loadtxt(infile)
-# print(pts.shape)
-# print(np.unique(pts[:, 3]))
-# create colormap
-n = int(np.unique(pts[:, 3]).max())
-# print(n)
-colmap = plt.get_cmap(color_map, n)
-npcolmap = np.ndarray([n, 3])
-for i in range(n):
-	npcolmap[i] = colmap(i)[0:3]
-z = np.zeros(3).reshape(1,3)
-npcolmap = np.insert(npcolmap, 0, z, axis=0)
+npcolmap = color_map(options.classes, options.colormap)
 
 points = pts[:, 0:3]
 colors = npcolmap[pts[:, 3].astype(int)]
