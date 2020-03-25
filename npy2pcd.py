@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+"""
+X,Y,Z,ラベル番号の情報を含む（numpy.savetxtで出力された）テキストファイルを、pcdフォーマットに変換する。
+テキストの１行のはじめの３つの数値を点の位置  x,y,z 、次の数値をラベル番号とみなす。
+これは ConvPoint で識別された *.npy_pts.txt 形式のファイルに対応している。
+"""
+
 import os
 import sys
 import random
@@ -58,6 +64,8 @@ if len(args) == 0:
 	parser.print_usage()
 	sys.exit(1)
 
+
+
 infile, outfile = args[0], options.output
 if outfile is None:
 	name = os.path.basename(infile)
@@ -74,4 +82,5 @@ colors = npcolmap[pts[:, 3].astype(int)]
 pcd = o3d.geometry.PointCloud()
 pcd.points = o3d.utility.Vector3dVector(points.astype(np.float64))
 pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float64))
+print("%s saving..." % outfile)
 o3d.io.write_point_cloud(outfile, pcd)
