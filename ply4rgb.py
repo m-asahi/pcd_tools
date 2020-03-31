@@ -25,10 +25,6 @@ parser.add_option('-s', '--show-colormap', help='show colormap', action='store_t
 parser.add_option('--colormap', help='pyplot colormap name', default='Paired', metavar='COLORMAP')
 
 (options, args) = parser.parse_args()
-if options.classes is None:
-	print('error! --classes is required.')
-	parser.print_help()
-	sys.exit(1)
 
 if options.show_colormap:
 	show_colormap(options)
