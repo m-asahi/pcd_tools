@@ -15,7 +15,7 @@ from optparse import OptionParser
 
 from pcdlib import color_map, generate_pcd, show_colormap
 
-parser = OptionParser("usage: %prog [options] npy_txt_file\nConvert numpy XYZ-Label format to PCD format with Colormap.")
+parser = OptionParser("usage: %prog [options] npy_txt_file ...\nConvert numpy XYZ-Label format to PCD format with Colormap.")
 parser.add_option('-c', '--classes', help='number of classes', type=int, metavar='CLASSES')
 parser.add_option('-s', '--show-colormap', help='show colormap', action='store_true')
 parser.add_option('--colormap', help='specify pyplot colormap name', default='Paired', metavar='COLORMAP')
@@ -32,21 +32,22 @@ if len(args) == 0:
 
 
 
-infile, outfile = args[0], options.output
-if outfile is None:
+def generate_outfile(infile):
 	name = os.path.basename(infile)
 	name = os.path.splitext(name)[0]
 	name = name.replace('.npy_pts', '') # ConvPointのexampleが.npy_pts.txtを出す
-	outfile = name + '.pcd'
+	return name + '.pcd'
 
-pts = np.loadtxt(infile)
-npcolmap = color_map(options.classes, options.colormap)
+for infile in args:
+	pts = np.loadtxt(infile)
+	npcolmap = color_map(options.classes, options.colormap)
 
-points = pts[:, 0:3]
-colors = npcolmap[pts[:, 3].astype(int)]
+	points = pts[:, 0:3]
+	colors = npcolmap[pts[:, 3].astype(int)]
 
-pcd = o3d.geometry.PointCloud()
-pcd.points = o3d.utility.Vector3dVector(points.astype(np.float64))
-pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float64))
-print("%s saving..." % outfile)
-o3d.io.write_point_cloud(outfile, pcd)
+	pcd = o3d.geometry.PointCloud()
+	pcd.points = o3d.utility.Vector3dVector(points.astype(np.float64))
+	pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float64))
+	outfile = generate_outfile(infile)
+	print("saving %s ..." % outfile)
+	o3d.io.write_point_cloud(outfile, pcd)

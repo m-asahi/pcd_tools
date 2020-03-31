@@ -18,9 +18,8 @@ from optparse import OptionParser
 from pcdlib import color_map, generate_pcd, show_colormap
 
 
-parser = OptionParser("usage: %prog [options] ply_file\nConvert PLY format to PCD format with Colormap.")
+parser = OptionParser("usage: %prog [options] ply_file ...\nConvert PLY format to PCD format with Colormap.")
 parser.add_option('-c', '--classes', help='number of classes', type=int, metavar='CLASSES')
-parser.add_option('-o', '--output', help='output filename', metavar='FILE')
 parser.add_option('-s', '--show-colormap', help='show colormap', action='store_true')
 parser.add_option('--colormap', help='pyplot colormap name', default='Paired', metavar='COLORMAP')
 
@@ -36,28 +35,30 @@ if len(args) == 0:
 
 
 
-infile, outfile = args[0], options.output
-if outfile is None:
+def generate_outfile(infile):
 	name = os.path.basename(infile)
 	name = os.path.splitext(name)[0]
-	outfile = name + '.pcd'
+	return name + '.pcd'
 
-ply = PlyData.read(infile)
-print('ply', ply)
-vertex = ply.elements[0]
-labels = [prop.name for prop in vertex.properties[3:]]
-print(labels)
-indices = vertex['preds']
 
-npcolmap = color_map(options.classes, options.colormap)
+for infile in args:
+	ply = PlyData.read(infile)
+	print('ply', ply)
+	vertex = ply.elements[0]
+	labels = [prop.name for prop in vertex.properties[3:]]
+	print(labels)
+	indices = vertex['preds']
 
-points = vertex[['x', 'y', 'z']]
-print(points)
-points = rfn.structured_to_unstructured(points)
-colors = npcolmap[indices]
+	npcolmap = color_map(options.classes, options.colormap)
 
-pcd = o3d.geometry.PointCloud()
-pcd.points = o3d.utility.Vector3dVector(points.astype(np.float32))
-pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float32))
-print("%s saving..." % outfile)
-o3d.io.write_point_cloud(outfile, pcd)
+	points = vertex[['x', 'y', 'z']]
+	print(points)
+	points = rfn.structured_to_unstructured(points)
+	colors = npcolmap[indices]
+
+	pcd = o3d.geometry.PointCloud()
+	pcd.points = o3d.utility.Vector3dVector(points.astype(np.float32))
+	pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float32))
+	outfile = generate_outfile(infile)
+	print("saving %s ..." % outfile)
+	o3d.io.write_point_cloud(outfile, pcd)
