@@ -43,16 +43,13 @@ def generate_outfile(infile):
 
 for infile in args:
 	ply = PlyData.read(infile)
-	print('ply', ply)
 	vertex = ply.elements[0]
 	labels = [prop.name for prop in vertex.properties[3:]]
-	print(labels)
 	indices = vertex['preds']
 
 	npcolmap = color_map(options.classes, options.colormap)
 
 	points = vertex[['x', 'y', 'z']]
-	print(points)
 	points = rfn.structured_to_unstructured(points)
 	colors = npcolmap[indices]
 
