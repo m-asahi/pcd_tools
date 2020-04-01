@@ -6,28 +6,29 @@ import matplotlib.pyplot as plt
 
 
 def color_map(n, map):
-	black      = [0,0,0]
-	ground     = [132, 145, 158]
-	buildings  = [200, 200, 203]
-	roadsign   = [246, 170, 0]
-	bollard    = [153, 0, 153]
-	trashcan   = [77, 196, 255]
-	barrier    = [0, 90, 255]
-	pedestrian = [255, 75, 0]
-	car        = [255, 241, 0]
-	vegetation = [216, 242, 85]
-	trees      = [3, 175, 122]
-	flowers    = [119, 217, 168]
-	artifacts  = [201, 172, 230]
+
+	black      = [0   , 0   , 0]
+	ground     = [200 , 200 , 203]
+	buildings  = [255 , 255 , 128]
+	roadsign   = [246 , 170 , 0]
+	bollard    = [153 , 0   , 153]
+	trashcan   = [77  , 196 , 255]
+	barrier    = [255 , 128 , 130]
+	pedestrian = [255 , 241 , 0]
+	car        = [255 , 75  , 0]
+	vegetation = [216 , 242 , 85]
+	trees      = [3   , 175 , 122]
+	flowers    = [119 , 217 , 168]
+	artifacts  = [201 , 172 , 230]
 
 	if map == 'npm3d':
-		colmap = [black, ground, buildings, roadsign, bollard, 
-			trashcan, barrier, pedestrian, car, vegetation ]
+		colmap = [black , ground  , buildings  , roadsign , bollard      ,
+		       trashcan , barrier , pedestrian , car      , vegetation ]
 		npcolmap = np.array(colmap)/255
 
 	elif map == 'semantic3d':
-		colmap = [black, ground, vegetation, trees, flowers, buildings, 
-			barrier, artifacts, car]
+		colmap = [black , ground  , vegetation , trees , flowers ,
+		      buildings , barrier , artifacts  , car]
 		if n == 8:
 			# for ConvPoint x Semantic3D
 			colmap.pop(0)
