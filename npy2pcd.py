@@ -18,7 +18,7 @@ from pcdlib import color_map, generate_pcd, show_colormap
 parser = OptionParser("usage: %prog [options] npy_txt_file ...\nConvert numpy XYZ-Label format to PCD format with Colormap.")
 parser.add_option('-c', '--classes', help='number of classes', type=int, metavar='CLASSES')
 parser.add_option('-s', '--show-colormap', help='show colormap', action='store_true')
-parser.add_option('--colormap', help='specify pyplot colormap name', default='Paired', metavar='COLORMAP')
+parser.add_option('--colormap', help='specify semantic3d, npm3d or pyplot colormap name', default='Paired', metavar='COLORMAP')
 
 (options, args) = parser.parse_args()
 
